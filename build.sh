@@ -2,4 +2,4 @@
 
 set -xe
 
-clang -Wall -Wextra -o main main.c -lm
+clang -O3 -Wall -Wextra -o main main.c -lm
