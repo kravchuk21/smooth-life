@@ -5,6 +5,9 @@
 #define WEIDTH 10
 #define HEIGHT 10
 
+char level[] = " .-=coaA@#";
+#define level_count (sizeof(level)/sizeof(level[0]) - 1)
+
 float grid[HEIGHT][WEIDTH] = {0};
 
 float rand_float(void) {
@@ -22,7 +25,8 @@ int main(void) {
 
     for (size_t y = 0; y < HEIGHT; ++y) {
         for (size_t x = 0; x < HEIGHT; ++x) {
-            printf("%f ", grid[y][x]);
+            char c = level[(int)(grid[y][x]*level_count - 1)];
+            printf("%c", c);
         }
         printf("\n");
     }
