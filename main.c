@@ -9,20 +9,25 @@ char level[] = " .-=coaA@#";
 #define level_count (sizeof(level)/sizeof(level[0]) - 1)
 
 float grid[HEIGHT][WEIDTH] = {0};
+float ra = 21;
 
 float rand_float(void) {
     return (float)rand()/(float)RAND_MAX;
 }
 
-int main(void) {
-    srand(time(0));
-
+void random_grid(void) {
     for (size_t y = 0; y < HEIGHT; ++y) {
         for (size_t x = 0; x < HEIGHT; ++x) {
             grid[y][x] = rand_float();
         }
     }
+}
 
+int emod(int a, int b) {
+    return (a % b + b) % b;
+}
+
+void display_grid(void) {
     for (size_t y = 0; y < HEIGHT; ++y) {
         for (size_t x = 0; x < HEIGHT; ++x) {
             char c = level[(int)(grid[y][x]*level_count - 1)];
@@ -30,6 +35,40 @@ int main(void) {
         }
         printf("\n");
     }
+}
+
+int main(void) {
+    srand(time(0));
+
+    random_grid();
+
+    int cx = 0;
+    int cy = 0;
+    float m = 0, N = 0;
+    float n = 0, M = 0;
+    float ri = ra/3;
+
+    for (int dy = -(ra - 1); dy <= (ra - 1); ++dy) {
+        for (int dx = -(ra - 1); dx <= (ra - 1); ++dx) {
+            int x = emod(cx + dx, WEIDTH);
+            int y = emod(cy + dx, HEIGHT);
+            if (dx*dx + dy*dy <= ri*ri) {
+                m  += grid[y][x];
+                M += 1;
+            }
+            else if (dx*dx + dy*dy <= ra*ra) {
+                n  += grid[y][x];
+                N += 1;
+            }
+        }
+    }
+
+    m /= M;
+    n /= N;
+
+    printf("m = %f, n = %f\n", m, n);
+
+    display_grid();
 
     return 0;
 }
