@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 #define WEIDTH 10
 #define HEIGHT 10
@@ -10,6 +11,12 @@ char level[] = " .-=coaA@#";
 
 float grid[HEIGHT][WEIDTH] = {0};
 float ra = 21;
+float alpha = 0.028;
+
+float b1 = 0.278;
+float b2 = 0.365;
+float d1 = 0.267;
+float d2 = 0.445;
 
 float rand_float(void) {
     return (float)rand()/(float)RAND_MAX;
@@ -35,6 +42,22 @@ void display_grid(void) {
         }
         printf("\n");
     }
+}
+
+float sigma1(float x, float a) {
+    return 1.0f / (1.0f + expf(-(x - a) * 4 / alpha));
+}
+
+float sigma2(float x, float a, float b) {
+    return sigma1(x, a) * (1 - sigma1(x, b));
+}
+
+float sigmam(float x, float y, float m) {
+    return x * (1 - sigma1(m, 0.5f)) + y*sigma1(m, 0.5f);
+}
+
+float s(float n, float m) {
+    return sigma2(n, sigmam(b1, d1, m), sigmam(b2, d2, m));
 }
 
 int main(void) {
@@ -66,9 +89,7 @@ int main(void) {
     m /= M;
     n /= N;
 
-    printf("m = %f, n = %f\n", m, n);
-
-    display_grid();
+    printf("s(n, m) = %f\n", s(n, m));
 
     return 0;
 }
